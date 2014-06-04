@@ -18,10 +18,11 @@ require 'bundler/setup'
 require 'active_record'
 require 'model_concerns'
 require 'active_record_mocks'
+require 'active_record_mocks/rspec'
 
 Bundler.setup
 
-db_cmd = "mysql -u %s -p%s -e"
+db_cmd = "mysql -u%s -p%s -e"
 db_drop_cmd = "'DROP DATABASE IF EXISTS %s' >/dev/null 2>&1"
 db_create_cmd = "'CREATE DATABASE %s' >/dev/null 2>&1"
 db_database = "active_record_mocks_testing"
@@ -45,7 +46,7 @@ RSpec.configure do |config|
 
   config.after :suite do
     ActiveRecord::Base.connection.disconnect!
-    system db_cmd % [db_user, db_password] + db_drop_cmd % db_database
+    #system db_cmd % [db_user, db_password] + db_drop_cmd % db_database
   end
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
