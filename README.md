@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # ModelConcerns
 
 TODO: Write a gem description
@@ -28,9 +27,9 @@ TODO: Write usage instructions here
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
-=======
+
 model_concerns
-==============
+
 
 常用的concerns
->>>>>>> 2befe37f10f31880bbe8ac459b54e9586f38f3e4
+
