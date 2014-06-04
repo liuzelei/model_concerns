@@ -14,7 +14,39 @@
 # users commonly want.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+require 'bundler/setup'
+require 'active_record'
+require 'model_concerns'
+require 'active_record_mocks'
+
+Bundler.setup
+
+db_cmd = "mysql -u %s -p%s -e"
+db_drop_cmd = "'DROP DATABASE IF EXISTS %s' >/dev/null 2>&1"
+db_create_cmd = "'CREATE DATABASE %s' >/dev/null 2>&1"
+db_database = "active_record_mocks_testing"
+db_user = "root"
+db_password = "13636632007"
+
+ActiveRecord::Base.establish_connection(
+  password:  db_password,
+  database:  db_database,
+  username:  db_user,
+  host:      "localhost",
+  adapter:   "mysql2"
+)
+
 RSpec.configure do |config|
+
+  config.before :suite do
+    system db_cmd % [db_user, db_password] + db_drop_cmd % db_database
+    system db_cmd % [db_user, db_password] + db_create_cmd % db_database
+  end
+
+  config.after :suite do
+    ActiveRecord::Base.connection.disconnect!
+    system db_cmd % [db_user, db_password] + db_drop_cmd % db_database
+  end
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
 =begin

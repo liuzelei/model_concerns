@@ -5,7 +5,7 @@ module ModelConcerns
     extend ActiveSupport::Concern
     module ClassMethods
 
-      Dir.mkdir('/tmp/locks')
+      Dir.mkdir('/tmp/locks') unless File.exists?('/tmp/locks')
 
       def sequence(prefix = nil)
         class_eval <<-CODE, __FILE__, __LINE__ + 1
