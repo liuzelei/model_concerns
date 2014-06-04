@@ -34,6 +34,8 @@ ActiveRecord::Base.establish_connection(
   database:  db_database,
   username:  db_user,
   host:      "localhost",
+  pool: 500,
+  timeout: 50000,
   adapter:   "mysql2"
 )
 

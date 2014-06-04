@@ -1,47 +1,42 @@
-# # encoding: utf-8
-# require 'spec_helper'
+# encoding: utf-8
+require 'spec_helper'
 
-# # describe 'test sequenceable' do
+describe "Sequenable" do
 
-# #   class TestMe < ActiveRecord::Base
-# #     include ModelConcerns::Sequenable
-# #     sequence :TM
-# #   end
+  it 'should sequence' do
+    with_mocked_tables do |m|
+      m.create_table do |t|
+        t.model_name :Foo
 
-# #   it 'should generate code' do
-# #     test_me = TestMe.new
-# #     test
-# #   end
-# # end
+        t.layout do |l|
+          l.string  :no
+          l.datetime :created_at
+          l.datetime :updated_at
+        end
+      end
 
+      class Foo < ActiveRecord::Base
+        include ModelConcerns::Sequenable
+        sequence :FO
+      end
 
-# describe "Sequenable" do
+      puts "this test will execute in long time, please wait"
+      threads = []
+      100.times do
+        threads << Thread.new do
+          100.times do
+            Foo.new.save
+          end
+        end
+      end
 
-#   it 'should generate code' do
-#     with_mocked_tables do |m|
-#       # m.enable_extension "uuid-ossp"
-#       # m.enable_extension "hstore"
+      threads.each do |thread|
+        thread.join
+      end
 
-#       t1 = m.create_table do |t|
-#         t.model_name :Foo
-#         t.belongs_to :bar
+      expect(Foo.all.count).to eq(10000)
 
-#         t.layout do |l|
-#            l.integer :bar_id
-#         end
-#       end
-
-#       t2 = m.create_table do |t|
-#         t.model_name :Bar
-#         t.has_many   :foo
-
-#         t.layout do |l|
-#           l.text :bar_text
-#         end
-#       end
-
-#       # Do Work Here
-#     end
-
-#   end
-# end
+      expect(Foo.select("count(1) as count, no").group("no").having("count(1) > 1").length).to eq(0)
+    end
+  end
+end
