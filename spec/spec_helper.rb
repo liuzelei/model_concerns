@@ -46,7 +46,7 @@ RSpec.configure do |config|
 
   config.after :suite do
     ActiveRecord::Base.connection.disconnect!
-    #system db_cmd % [db_user, db_password] + db_drop_cmd % db_database
+    system db_cmd % [db_user, db_password] + db_drop_cmd % db_database
   end
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.

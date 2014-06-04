@@ -17,6 +17,16 @@ module ModelConcerns
       self.disabled_at = nil
     end
 
+    def disable!
+      self.disable
+      self.save(validate: false)
+    end
+
+    def enable!
+      self.enable
+      self.save(validate: false)
+    end
+
     def disabled?
       !self.disabled_at.nil?
     end
