@@ -6,7 +6,7 @@ describe "Sequenable" do
   it 'should sequence' do
     with_mocked_tables do |m|
       m.create_table do |t|
-        t.model_name :Foo
+        t.model_name :FooSequenable
 
         t.layout do |l|
           l.string  :no
@@ -15,28 +15,40 @@ describe "Sequenable" do
         end
       end
 
-      class Foo < ActiveRecord::Base
+      class FooSequenable < ActiveRecord::Base
         include ModelConcerns::Sequenable
         sequence :FO
       end
 
-      puts "this test will execute in long time, please wait"
-      threads = []
-      100.times do
-        threads << Thread.new do
-          100.times do
-            Foo.new.save
+      puts "this test will take a long time, please wait....."
+      pids = []
+      10.times do
+        ActiveRecord::Base.establish_connection(ActiveRecord::Base.connection_config)
+
+        pids << fork do
+
+          threads = []
+          10.times do
+            threads << Thread.new do
+              100.times do
+                FooSequenable.new.save
+              end
+            end
+          end
+
+          threads.each do |thread|
+            thread.join
           end
         end
       end
 
-      threads.each do |thread|
-        thread.join
+      pids.each do |pid|
+        Process.waitpid(pid)
       end
 
-      expect(Foo.all.count).to eq(10000)
+      expect(FooSequenable.all.count).to eq(10000)
 
-      expect(Foo.select("count(1) as count, no").group("no").having("count(1) > 1").length).to eq(0)
+      expect(FooSequenable.select("count(1) as count, no").group("no").having("count(1) > 1").length).to eq(0)
     end
   end
 end

@@ -6,7 +6,7 @@ describe "Assignable" do
   it 'should assign' do
     with_mocked_tables do |m|
       m.create_table do |t|
-        t.model_name :Foo
+        t.model_name :FooAssignable
 
         t.layout do |l|
           l.integer  :owner_id
@@ -28,19 +28,19 @@ describe "Assignable" do
       class User < ActiveRecord::Base
       end
 
-      class Foo < ActiveRecord::Base
+      class FooAssignable < ActiveRecord::Base
         include ModelConcerns::Assignable
         has :owner, :manager
       end
 
       u1 = User.create(no: "NO1")
       u2 = User.create(no: "NO2")
-      f = Foo.create(owner: u1, manager: u2)
+      f = FooAssignable.create(owner: u1, manager: u2)
 
-      expect(Foo.filter_by_owner(u1).count).to eq(1)
-      expect(Foo.filter_by_owner(u1).count).to eq(1)
-      expect(Foo.filter_by_manager(u2).count).to eq(1)
-      expect(Foo.filter_by_manager(u2).count).to eq(1)
+      expect(FooAssignable.filter_by_owner(u1).count).to eq(1)
+      expect(FooAssignable.filter_by_owner(u1).count).to eq(1)
+      expect(FooAssignable.filter_by_manager(u2).count).to eq(1)
+      expect(FooAssignable.filter_by_manager(u2).count).to eq(1)
 
       f.assign_owner(u2)
       expect(f.owner.id).to eq(u2.id)

@@ -6,7 +6,7 @@ describe "Searchable" do
   it 'should searchable' do
     with_mocked_tables do |m|
       m.create_table do |t|
-        t.model_name :Foo
+        t.model_name :FooSearchable
 
         t.layout do |l|
           l.string   :no
@@ -16,17 +16,17 @@ describe "Searchable" do
         end
       end
 
-      class Foo < ActiveRecord::Base
+      class FooSearchable < ActiveRecord::Base
         include ModelConcerns::Searchable
         quick_search :no, :count
       end
 
 
       10.times do |index|
-        Foo.create(no: "NO#{index}", count: index)
+        FooSearchable.create(no: "NO#{index}", count: index)
       end
 
-      expect(Foo.search("9").count).to eq(1)
+      expect(FooSearchable.search("9").count).to eq(1)
     end
   end
 end
