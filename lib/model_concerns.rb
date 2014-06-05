@@ -4,6 +4,7 @@ require "model_concerns/version"
 require "model_concerns/disable"
 require "model_concerns/sequenable"
 require "model_concerns/assignable"
+require "model_concerns/searchable"
 
 module ModelConcerns
 
