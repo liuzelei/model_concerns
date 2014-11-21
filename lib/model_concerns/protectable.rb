@@ -22,6 +22,10 @@ module ModelConcerns
       def find_id_by_fake_id(fake_id)
         return (fake_id ^ xor_key).to_i
       end
+
+      def protectable?
+        true
+      end
     end
   end
 end

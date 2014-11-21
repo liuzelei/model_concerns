@@ -17,6 +17,7 @@ describe "Protectable" do
 
       expect(FooProtectable.new.fake_id).to be_nil
       expect(FooProtectable.xor_key).to eq(Digest::MD5.hexdigest(FooProtectable.name.underscore))
+      expect(FooProtectable.protectable?).to eq(true)
 
       model = FooProtectable.create
       expect(model.fake_id).not_to be_nil
