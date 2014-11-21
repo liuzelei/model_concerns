@@ -20,6 +20,7 @@ describe "Protectable" do
 
       model = FooProtectable.create
       expect(model.fake_id).not_to be_nil
+      expect(model.id).to eq(FooProtectable.find_id_by_fake_id(model.fake_id))
       expect(model.id).to eq(FooProtectable.find_by_fake_id(model.fake_id).id)
       model2 = FooProtectable.create
       expect(model2.fake_id).not_to eq(model.fake_id)

@@ -18,6 +18,10 @@ module ModelConcerns
         real_id = fake_id ^ xor_key
         return find_by_id(real_id)
       end
+
+      def find_id_by_fake_id(fake_id)
+        return (fake_id ^ xor_key).to_i
+      end
     end
   end
 end
