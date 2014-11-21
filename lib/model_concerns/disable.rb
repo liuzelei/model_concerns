@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 module ModelConcerns
   module Disable
     extend ActiveSupport::Concern
