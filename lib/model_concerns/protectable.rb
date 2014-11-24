@@ -1,4 +1,5 @@
 require "model_concerns/string"
+require "base64"
 
 module ModelConcerns
   module Protectable
@@ -6,21 +7,20 @@ module ModelConcerns
 
     def fake_id
       return nil if self.id.nil?
-      @fake_id ||= self.id.to_s ^ self.class.xor_key
+      @fake_id ||= Base64.encode64(self.id.to_s ^ self.class.xor_key).gsub(/\n/, '')
     end
 
     module ClassMethods
       def xor_key
-        @xor_key ||= Digest::MD5.hexdigest(name.underscore)
+        @xor_key ||= Digest::MD5.hexdigest(name)
       end
 
       def find_by_fake_id(fake_id)
-        real_id = fake_id ^ xor_key
-        return find_by_id(real_id)
+        return find_by_id(find_id_by_fake_id(fake_id))
       end
 
       def find_id_by_fake_id(fake_id)
-        return (fake_id ^ xor_key).to_i
+        return (Base64.decode64(fake_id) ^ xor_key).to_i
       end
 
       def protectable?

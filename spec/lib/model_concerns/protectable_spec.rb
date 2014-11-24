@@ -16,13 +16,19 @@ describe "Protectable" do
       end
 
       expect(FooProtectable.new.fake_id).to be_nil
-      expect(FooProtectable.xor_key).to eq(Digest::MD5.hexdigest(FooProtectable.name.underscore))
+      expect(FooProtectable.xor_key).to eq(Digest::MD5.hexdigest(FooProtectable.name))
       expect(FooProtectable.protectable?).to eq(true)
 
+      p FooProtectable.xor_key
+      1000.times do
+        model = FooProtectable.create
+        p model.fake_id
+        expect(model.fake_id).not_to be_nil
+        expect(model.id).to eq(FooProtectable.find_id_by_fake_id(model.fake_id))
+        expect(model.id).to eq(FooProtectable.find_by_fake_id(model.fake_id).id)
+      end
+
       model = FooProtectable.create
-      expect(model.fake_id).not_to be_nil
-      expect(model.id).to eq(FooProtectable.find_id_by_fake_id(model.fake_id))
-      expect(model.id).to eq(FooProtectable.find_by_fake_id(model.fake_id).id)
       model2 = FooProtectable.create
       expect(model2.fake_id).not_to eq(model.fake_id)
     end
