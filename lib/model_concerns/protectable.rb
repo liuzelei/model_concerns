@@ -8,7 +8,7 @@ module ModelConcerns
     end
 
     def to_param
-      fake_id
+      fake_id.to_s
     end
 
     def reload(options = nil)
@@ -40,11 +40,11 @@ module ModelConcerns
       end
 
       def find_by_fake_id(fake_id)
-        return find_by_id(find_id_by_fake_id(fake_id))
+        return find_by_id(find_id_by_fake_id(fake_id.to_i))
       end
 
       def find_id_by_fake_id(fake_id)
-        return fake_id ^ protect_seed
+        return fake_id.to_i ^ protect_seed
       end
 
       def protectable?
