@@ -1,18 +1,42 @@
-require "model_concerns/string"
-require "base64"
-
 module ModelConcerns
   module Protectable
     extend ActiveSupport::Concern
 
     def fake_id
       return nil if self.id.nil?
-      @fake_id ||= Base64.encode64(self.id.to_s ^ self.class.xor_key).gsub(/\n/, '')
+      @fake_id ||= self.id ^ self.class.protect_seed
+    end
+
+    def to_param
+      fake_id
+    end
+
+    def reload(options = nil)
+      options = (options || {}).merge(real_id: true)
+      super(options)
     end
 
     module ClassMethods
-      def xor_key
-        @xor_key ||= Digest::MD5.hexdigest(name)
+
+      def find(*args)
+        scope = args.slice!(0)
+        options = args.slice!(0) || {}
+        if protectable? && !options[:real_id]
+          if scope.is_a?(Array)
+            scope.map! {|a| find_id_by_fake_id(a).to_i}
+          else
+            scope = find_id_by_fake_id(scope)
+          end
+        end
+        super(scope)
+      end
+
+      def protect_seed
+        alphabet = Array("a".."z") 
+        number = name.split("").collect do |char|
+          alphabet.index(char)
+        end
+        @protect_seed ||= number.shift(12).join.to_i
       end
 
       def find_by_fake_id(fake_id)
@@ -20,7 +44,7 @@ module ModelConcerns
       end
 
       def find_id_by_fake_id(fake_id)
-        return (Base64.decode64(fake_id) ^ xor_key).to_i
+        return fake_id ^ protect_seed
       end
 
       def protectable?

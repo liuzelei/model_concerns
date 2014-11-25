@@ -6,6 +6,8 @@ require "model_concerns/sequenable"
 require "model_concerns/assignable"
 require "model_concerns/searchable"
 require "model_concerns/protectable"
+require "model_concerns/array"
+require "model_concerns/string"
 
 module ModelConcerns
 
