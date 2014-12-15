@@ -13,6 +13,7 @@ module ModelConcerns
 
     def reload(options = nil)
       options = (options || {}).merge(real_id: true)
+      self.id = self.fake_id
       super(options)
     end
 
@@ -28,6 +29,7 @@ module ModelConcerns
             scope = find_id_by_fake_id(scope)
           end
         end
+
         super(scope)
       end
 
